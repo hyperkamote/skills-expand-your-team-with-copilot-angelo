@@ -472,6 +472,47 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Function to share an activity on social media
+  function shareActivity(name, details, platform) {
+    const formattedSchedule = formatSchedule(details);
+    const shareText = `Check out ${name} at Mergington High School! ${details.description} Schedule: ${formattedSchedule}`;
+    const shareUrl = window.location.href;
+
+    let url = "";
+
+    switch (platform) {
+      case "facebook":
+        // Facebook Share Dialog
+        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+        window.open(url, "_blank", "width=600,height=400");
+        break;
+
+      case "twitter":
+        // Twitter Share
+        url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+        window.open(url, "_blank", "width=600,height=400");
+        break;
+
+      case "whatsapp":
+        // WhatsApp Share
+        const whatsappText = `${shareText} ${shareUrl}`;
+        url = `https://wa.me/?text=${encodeURIComponent(whatsappText)}`;
+        window.open(url, "_blank");
+        break;
+
+      case "email":
+        // Email Share
+        const emailSubject = `Check out ${name} at Mergington High School`;
+        const emailBody = `${shareText}\n\nLearn more: ${shareUrl}`;
+        url = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+        window.location.href = url;
+        break;
+
+      default:
+        console.error("Unknown platform:", platform);
+    }
+  }
+
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
@@ -552,6 +593,21 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("")}
         </ul>
       </div>
+      <div class="social-share-container">
+        <span class="share-label">Share:</span>
+        <button class="share-button facebook" data-activity="${name}" data-platform="facebook" title="Share on Facebook" aria-label="Share ${name} on Facebook">
+          <span class="share-icon">f</span>
+        </button>
+        <button class="share-button twitter" data-activity="${name}" data-platform="twitter" title="Share on Twitter" aria-label="Share ${name} on Twitter">
+          <span class="share-icon">𝕏</span>
+        </button>
+        <button class="share-button whatsapp" data-activity="${name}" data-platform="whatsapp" title="Share on WhatsApp" aria-label="Share ${name} on WhatsApp">
+          <span class="share-icon">📱</span>
+        </button>
+        <button class="share-button email" data-activity="${name}" data-platform="email" title="Share via Email" aria-label="Share ${name} via Email">
+          <span class="share-icon">✉</span>
+        </button>
+      </div>
       <div class="activity-card-actions">
         ${
           currentUser
@@ -575,6 +631,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteButtons = activityCard.querySelectorAll(".delete-participant");
     deleteButtons.forEach((button) => {
       button.addEventListener("click", handleUnregister);
+    });
+
+    // Add click handlers for social share buttons
+    const shareButtons = activityCard.querySelectorAll(".share-button");
+    shareButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const platform = button.dataset.platform;
+        shareActivity(name, details, platform);
+      });
     });
 
     // Add click handler for register button (only when authenticated)
