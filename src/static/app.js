@@ -483,7 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
     switch (platform) {
       case "facebook":
         // Facebook Share Dialog
-        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
         window.open(url, "_blank", "width=600,height=400");
         break;
 
